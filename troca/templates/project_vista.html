@@ -1,0 +1,348 @@
+{% load social_share %}
+{% load phileo_tags %}
+{% load sanitizer %}
+{% load humanize %}
+{% load get_skills %}
+<!-- TOP BANNER DETAILS -->
+
+<div class="" style="background-color:#DFE1ED; overflow:hidden;">
+  <div class="row">
+    <div class="large-12 medium-12 columns" style="padding:0px;">      
+      <div class="img-container-panel2" style="background-image: url('{{ object.thumbnail_url.url_700x700 }}'); padding:0px;">
+        <div class="resumen_proyecto">
+          <h2 class="raleway bold txt38">
+						{%if vista_min %}
+							<a href="/proyecto/{{project.user }}/{{project.slug }}"> 
+								{{ object.title }}
+							</a>
+						{%else%}
+							{{ object.title }}
+						{%endif%}
+            <small class="right">
+              {% if user.is_authenticated %}
+								{% ifequal user.username author_user.username %}
+								<span data-tooltip aria-haspopup="true" class="has-tip" title="Editar el proyecto">
+									<a href="/proyecto/editar/{{ author_user.username }}/{{ object.slug }}"><i class="fa fa-pencil-square-o red-main"></i></a>
+								</span>
+								{% endifequal %}
+							
+              	<a>
+									{% likes user as like_list %}
+									<i id="like" class="fa fa-heart-o{% for like in like_list %}{% ifequal object  like.receiver %}no fa-heart {%endifequal%}{% endfor %}
+									"></i>                
+									{{ object|likes_count }}
+								</a>
+							{%else%}
+                <a>
+                  <i id="like" class="fa fa-heart-o "></i>
+                  {{ object|likes_count }}
+								</a>
+              {% endif %}
+                  
+                  
+                  
+                  <a class="mt10"   data-options="align:right"  data-dropdown="drop1" aria-controls="drop1" aria-expanded="false"><i class="fa fa-share-alt"></i> </a>
+                  <ul id="drop1" class="f-dropdown" data-dropdown-content aria-hidden="true" tabindex="-1">
+                    <li>{% post_to_facebook object_or_url "Facebook" %}</li>
+                    <li>{% post_to_twitter "{{object.title}} | troca.cc" object_or_url "Twitter" %}</li>
+                    <li>{% post_to_gplus object_or_url "Google+" %}</li>
+                  </ul>
+                </small>
+              </h2>
+              <h4 class="raleway bold txt16">{{ author_user.first_name }} {{ author_user.last_name }}</h4>
+              <form id="form-like" action="/likes/like/{{ contType }}:{{ object.id }}/" method="post">{% csrf_token %}</form>
+              
+              
+              
+              
+              {% autoescape off %}			
+              <p class="raleway regular txt16">{{ object.summary|strip_html }}</p>
+              
+              {% if user.is_authenticated %}
+              <a>
+                <i id="like2" class="fa fa-heart-o{% for like in like_list %}{% ifequal object  like.receiver %}no fa-heart {%endifequal%}{% endfor %}
+                "></i>
+                {{ object|likes_count }}</a>
+                {%else%}
+                <a>
+                  <i id="like2" class="fa fa-heart-o "></i>
+                  {{ object|likes_count }}</a>
+                  {% endif %}
+                  
+                  {% endautoescape %}
+                  
+                  <script>
+                  $('#like').click(function() {
+                    $("#form-like").submit()
+                  });				
+                  $('#like2').click(function() {
+                    $("#form-like").submit()
+                  });
+                  </script>
+                  
+                  
+                </div>
+                
+              </div>
+            </div>
+            
+            
+          </div>
+        </div>
+        <!-- BODY CONTENT -->
+        <div class="content-view " style="background-color:#32475A; overflow:hidden;"><!--style="background-color:#32475A;"-->
+          <div class="row">            
+            <!--------- Contenido ------------------>
+            <div class="large-8 medium-8 columns contenido_proyecto fullheight" style="background-color:#DFE1ED;"><!--style="background-color:#DFE1ED;"-->              
+              <h4 class="mt25 raleway bold txt18">Detalles</h4>  
+              <div class="tabs-content">                
+                <a name="content"></a>                
+                <!-- 				<p class="black-shade mb25"><i class="fa fa-calendar"></i> { object.date|naturalday }}</p> -->                
+                <div class="content active froala-view" id="panel1">
+									
+                  {% autoescape off %} {{ object.content|strip_html }} {% endautoescape %}
+									
+                  {% if object.needs %}
+                  <!-- 					<h4 class="mb25">Mi proyecto necesita</h4> -->
+                  <div class="contenido_proyecto">
+                    {% autoescape off %} {{ object.needs }} {% endautoescape %}
+                  </div>
+                  {% endif %}
+                </div>                
+              </div>
+              <div class="comment-view">
+                <div class="row padrl15">
+                  <div class="large-12 medium-12 columns">
+                    <a name="comments"></a>
+                    <h4 class="mtb25 raleway bold 18">Comentarios</h4>
+                    <br>
+                    {% include "comentarios.html" with projectSlug=project username=user userprofile=userprofile%}
+                  </div>
+                </div>
+              </div>
+              
+              
+            </div>
+            
+            <!--------- Side content ------------------>
+            
+            <div class="large-4 medium-4 columns show-for-medium-up project-sidebar">
+              <div class="">
+								<!-- 	Habilidades  -->
+                <div class="row">
+                  <div class="large-12 medium-12 columns">
+								 <h6 class="mt10">Necesita</h6>
+                          <ul class="inline-list">
+                            {% for cat in object.category.all %}
+                            <li class="label-cat"><span class="label-min" title="{{cat.title}}">{{ cat.title |truncatechars:15}}</span></li>
+                            {% endfor %}
+                         
+                          {% for cat in object.category_supp.all %}
+                          <li class="label-cat"><span class="label-min label-min-supp" title="{{cat.title}}">{{ cat.title |truncatechars:15}}</span></li>
+                          {% endfor %}
+                        </ul>		
+                        <h6 class="mt10"></i> Ofrece</h6>
+                        <ul class="inline-list">
+                          {% for skill in author.category.all %}
+                          <li class="label-cat"><span class="label-min" title="{{skill.title}}">{{ skill.title |truncatechars:15}}</span></li>
+                          {% endfor %}
+                        </ul>
+									</div>
+								</div>
+							<!-- Fin Habilidades  -->
+							<hr>
+							<!--------- Colaboradores ------------------>
+                  <div class="row">			
+                    <div class="large-12 medium-12 columns colaboradores" >
+                      {% if collaborators or rev_collaborators%}
+                      <h4 class="mtb25">Colaboran en este proyecto</h4>
+                      {% for x in collaboratorsProfile %}
+                      <ul class="inline-list mb15">
+                        <li>
+                          <a href="/perfil/{{ x.user.id }}">
+                            <div class="img-container-user circular" style="background-image: url('{{ x.avatar_url.url_700x700 }}');"></div>
+                          </a>
+                        </li>
+                        <li>
+                          <h5 class="mb0"><a href="/perfil/{{ x.user.id }}">{{ x.user.username }} </a></h5>
+                          <!-- 						<p class="mb0 subheader">{ x.user.first_name }} { x.user.last_name }}</p> -->
+                          <ul class="inline-list ">
+                            {% for c in collaborators %}								
+                            {%if c.autor == x.user %}									
+                            <li class="label-cat">
+                              <a href="/descubre/{{c.autorSkill.category.slug}}/{{c.autorSkill.slug}}">
+                                <span class=" label-min" title="{{c.autorSkill.title}}">{{ c.autorSkill.title}}</span>  &nbsp &nbsp
+                              </a>
+                            </li>
+                            {%endif%}								
+                            {% endfor %}						
+                            {% for c in rev_collaborators %}	
+                            {%if c.collaborator == x.user %}
+                            <li class="label-cat">
+                              <a href="/descubre/{{c.collaboratorSkill.category.slug}}/{{c.collaboratorSkill.slug}}">
+                                <span class=" label-min" title="{{c.collaboratorSkill.title}}">{{ c.collaboratorSkill.title }}</span> &nbsp &nbsp
+                              </a>
+                            </li>
+                            {%endif%}							
+                            {% endfor %}
+                          </ul>
+                          
+                        </li>
+                      </ul>
+                      {% endfor %}
+                      
+                      
+                      {% else %}
+                      <ul class="mb25 no-bullet">
+                        <li>
+                          <h6 class="subheader"><i class="fa fa-life-ring"></i> Aún no hay colaboradores</h6></li>
+                        </ul>
+                        {%endif%}
+                      </div>
+                    </div> 
+							<div style="text-align:center; ">
+							<a  class="btn btn-primary button radius btnRed raleway bold txt18" href="#" data-reveal-id="firstModal" >Quiero Participar</a>
+							</div>
+										<!-- Fin.colaboradores -->                    
+										<hr>
+			              <!-- Administrador -->
+                     <div class="">
+                      <div calss="large-12 medium-12 columns" >					
+												 <h5>Administrador</h5>
+                        <ul class="inline-list mb15" style="">
+                          <li>							
+                            <a href="/perfil/{{ author_user.id }}">
+                              <div class="img-container-user circular" style="background-image: url('{{ author.avatar_url.url_700x700 }}');"></div>
+                            </a>
+                          </li>
+                          <li>
+                            <h5 class="mb0"><a href="/perfil/{{ object.user.id }}">{{ object.user.first_name }} {{ object.user.last_name }}</a></h5>			
+                            <div>
+                              <div class="info-cantidad">
+																<div class="border-right div_ancho_medio"><h1 class="raleway bold txt18">{{author | cant_proyectos }}</h1 > <span class="raleway bold txt10">PROYECTOS<br>CREADOS </span> </div>
+																<div class="div_ancho_medio"><h1 class="raleway bold txt18">{{author | cant_trueques }}</h1> <span class="raleway bold txt10">TRUEQUES<br>REALIZADOS</span></div>
+                              </div>
+                              {% if author.facebook or author.twitter %}
+                              <ul class=" social-icon" style="text-align:left;">
+                                {% if author.facebook %}
+                                <li><a href="{{ object.facebook }}"><i class="fa fa-facebook-square"></i></a></li>
+                                {% endif %} {% if author.twitter %}
+                                <li><a href="{{ author.twitter }}"><i class="fa fa-twitter-square"></i></a></li> 
+                                {% endif %}              
+                              </ul>
+                              {% endif %}
+                            </div>
+                          </li>
+                        </ul>			
+                      </div>
+                    </div>
+										<!-- Fin Administrador -->
+                    
+							
+							
+							
+							<!--<div id="firstModal" class="reveal-modal tiny" data-reveal aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
+								<a class="close-reveal-modal" aria-label="Close">&#215;</a>														
+							</div> -->							
+							<!-- 	Intercambio	 -->
+                    <!-- CHECK COINCIDENCES -->
+                    {% if user.is_authenticated %} 										
+										{% if object.num_needs < 100 %}
+                    	{% if isMatch %} 																								
+												<div id="firstModal" class="reveal-modal tiny" data-reveal aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
+							<br>									
+							<p class="small mb15"><span data-tooltip aria-haspopup="true" class="has-tip" title="Son las posibilidades de colaboración dados tres factores: <br>1. Tus habilidades <br>2. Las nacesidades del proyecto <br>3. Las habilidades que el autor del proyecto puede darte a cambio">Opciones de colaboración</span></p>
+																	
+										
+																<form class="mb15" action="/colaborar/{{ user.username }}/{{ object.slug }}/" method="post">
+																			{% csrf_token %}
+																			{% if not isReverseMatch %}
+																				<label><i class="fa fa-gift red-main"></i> Selecciona la habilidad que <b>quieres donar</b>
+																					<select class="radius" name="gives">
+																			{% else %}
+																				<label><i class="fa fa-long-arrow-left red-main"></i> Selecciona la habilidad que <b>quieres dar</b>
+																						<select class="mb0 radius" name="gives">
+																			{% endif %}                          
+																							{% for key, values in userGives.items %}
+																									<!--  <optgroup label="{{ key }}"> -->
+																									<option value="{{ values.1 }}">{{ values.0 }}</option>
+																									<!--</optgroup>-->
+																							{% endfor %}
+																						</select>
+																				</label> 
+																						{% if isReverseMatch %}
+																								<label><i class="fa fa-long-arrow-right red-main"></i> Selecciona la habilidad que <b>quieres recibir</b>
+																								<select class="radius" name="receives">
+																									{% for key, values in userRecives.items %}
+																										<optgroup label="{{ values.2 }}">
+																											<option value="{{ values.2 }}/{{ values.1 }}">{{ values.0 }}</option>
+																										</optgroup>
+																									{% endfor %}
+																								</select>
+																								</label> 
+																						<input type="submit" class="radius button expand mb0 btnRed" value="Proponer trueque" /> 
+																						{% else %}
+																						<input type="submit" class="radius button expand mb0 btnRed" value="Proponer donación" />
+																						{% endif %}
+																			</form>
+										
+													<a class="close-reveal-modal" aria-label="Close">&#215;</a>														
+												</div>									
+                    			
+                        {% else %} 	<!--No isMatch -->
+                        	{% if hasProfile %}
+														<div id="firstModal" class="reveal-modal tiny" data-reveal aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
+															<br>
+															<i class="fa fa-meh-o"></i> No se encuentran las habilidades necesitadas en el proyecto entre tus habilidades ofrecidas, si tienes alguna que no hayas marcado puedes configurarlo <a href="/register/perfil/">aquí</a>.
+															<a class="close-reveal-modal" aria-label="Close">&#215;</a>														
+														</div>
+                      		{% else %} 	<!--No hasProfile -->
+														<div id="firstModal" class="reveal-modal tiny" data-reveal aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
+															<br>
+															<i class="fa fa-frown-o"></i> No hay opciones de colaboración o <br>
+															<i class="fa fa-meh-o"></i> ¡Aún no has completado la información mínima de tu perfil! Para obtener mejores resultados complétalo <a href="/register/perfil/">aquí</a>.
+															<a class="close-reveal-modal" aria-label="Close">&#215;</a>														
+														</div>
+                      		{% endif %} <!--FIN hasProfile -->
+                      	{% endif %} <!--FIN isMatch -->
+                      {% else %} 	<!--proecto completo -->			
+												<div id="firstModal" class="reveal-modal tiny" data-reveal aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
+													<br>
+													<i class="fa fa-smile-o"></i> Este proyecto ya está completo, pero hay muchas otras opciones esperándote <a href="/descubre/">aquí</a>.
+													<a class="close-reveal-modal" aria-label="Close">&#215;</a>														
+												</div>                      
+                      {% endif %} 	<!--fin proyecto completo-->
+                      {% else %} 	<!--No ha iniciado sesión -->
+												<div id="firstModal" class="reveal-modal tiny" data-reveal aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
+													<br>
+													<i class="fa fa-frown-o"></i> Opps! Para poder participar debes <a href="{% url 'register' %}">registrarte</a> o <a href="{% url 'login' %}">iniciar sesión</a>.
+													<a class="close-reveal-modal" aria-label="Close">&#215;</a>														
+												</div>                      
+                      {% endif %} <!--fin inicio sesión -->
+                      <!-- CHECK COINCIDENCES -->
+										<!-- 	Fin Intercambio  -->
+							
+							
+							
+							
+                  </div>
+                </div>
+						
+<!-- 						project-sidebar -->
+						<script>
+							document.onload="fullheight()";
+						function fullheight() {
+							alert("aaa");
+							var tabs = document.getElementsByClassName("fullheight");
+							if (tabs) {
+								for (var i = 0; i < tabs.length; i++) {
+									alert(tabs[i].parentNode.style.height);
+										tabs[i].style.height=tabs[i].parentNode.style.height;
+										
+								}
+							}
+						}
+						</script>
+              </div>
+              
+            </div>

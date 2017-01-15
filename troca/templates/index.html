@@ -1,0 +1,676 @@
+{% load staticfiles %} 
+{% load core_extras %}
+{% load get_skills %}
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+	<meta charset="utf-8" />
+
+	<script>
+		(function(i, s, o, g, r, a, m) {
+			i['GoogleAnalyticsObject'] = r;
+			i[r] = i[r] || function() {
+				(i[r].q = i[r].q || []).push(arguments)
+			}, i[r].l = 1 * new Date();
+			a = s.createElement(o),
+				m = s.getElementsByTagName(o)[0];
+			a.async = 1;
+			a.src = g;
+			m.parentNode.insertBefore(a, m)
+		})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+		ga('create', 'UA-62933905-1', 'auto');
+		ga('send', 'pageview');
+	</script>
+	
+	<script type="text/javascript">
+    window.smartlook||(function(d) {
+    var o=smartlook=function(){ o.api.push(arguments)},s=d.getElementsByTagName('script')[0];
+    var c=d.createElement('script');o.api=new Array();c.async=true;c.type='text/javascript';
+    c.charset='utf-8';c.src='//rec.getsmartlook.com/bundle.js';s.parentNode.insertBefore(c,s);
+    })(document);
+    smartlook('init', '491c7aed0a175fa8542882f30d0f3d471e9cd445');
+</script>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+	{% block meta %}
+	{% endblock meta %} 
+	{% block base_title %}
+	<title>{% block title %}troca.beta{% endblock title %}</title>
+	<link rel="shortcut icon" href="{% static "foundation/img/favicon.ico" %}"/> 
+	{% endblock base_title %} 
+	{# Base Foundation CSS #}
+	{% block foundation_css %}
+	<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+	<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,700,300' rel='stylesheet' type='text/css'>
+	<link href="{% static "css/normalize.css" %}" rel="stylesheet" />
+	<link href="{% static "foundation/css/foundation.min.css" %}" rel="stylesheet" />
+	<link rel="stylesheet "href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"> 
+	<link href="{% static "css/multiple-select.css" %}" rel="stylesheet">
+	{% endblock foundation_css %}
+	{# Custom CSS #} 
+	{% block css %}
+	<link rel="stylesheet "type="text/css" href="{% static "feedback/main.css" %}" />
+	<link href="{% static "css/style.css" %}" rel="stylesheet" />
+	<link href="{% static "css/hover.css" %}" rel="stylesheet" />
+	<link href="{% static "froala/css/froala_editor.min.css" %}" rel="stylesheet" />
+	<link href="{% static "froala/css/froala_style.css" %}" rel="stylesheet" />
+	<link href="{% static "froala/css/themes/custom-theme.css" %}" rel="stylesheet" />
+	{% endblock css %} {# Override if you need another version of modernizr #} {% block foundation_modernizer %}
+	{% endblock foundation_modernizer %} 
+	{# Custom head JS #}
+	{% block head_js %}
+	<script src="{% static "js/jquery.js" %}"></script>
+	<script src="{% static "js/main.js" %}"></script>
+	<script src="{% static "js/jquery-ui.js" %}"></script>
+	<script src="{% static "js/isotope.js" %}"></script>
+	<script src="{% static "froala/js/froala_editor.min.js" %}"></script>
+	<script src="{% static "froala/js/plugins/video.min.js" %}"></script>
+	<script src="{% static "froala/js/plugins/fullscreen.min.js" %}"></script>
+	<script src="{% static "froala/js/plugins/lists.min.js" %}"></script>
+  <script src="{% static "froala/js/plugins/char_counter.min.js" %}"></script>
+	<!-- Place this tag right after the last button or just before your close body tag. -->
+	<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+	<script src="{% static "js/jquery.multi-select.js" %}"></script>
+	<script src="{% static "js/jquery.quicksearch.js" %}"></script>
+	<script src="{% static "js/jquery.cookie.js" %}"></script>
+	<script src="{% static "js/jquery.validate.js" %}"></script>
+	<script src="{% static "js/packery.js" %}"></script>
+	<script src="https://npmcdn.com/draggabilly@2.1/dist/draggabilly.pkgd.min.js"></script>
+
+	{% endblock head_js %} 
+	{% block extrahead %}
+
+	{% endblock %}
+
+		<style>
+		@font-face {
+		 font-family: 'antonio-regular';
+		 src: url('{% static "ttf/Antonio-Regular.ttf" %}');
+		}
+		@font-face {
+		 font-family: 'antonio-light';
+		 src: url('{% static "ttf/Antonio-Light.ttf" %}');
+		}
+		@font-face {
+		 font-family: 'antonio-bold';
+		 src: url('{% static "ttf/Antonio-Bold.ttf" %}');
+		}
+	</style>
+	</head>
+	
+	<body>
+		<div class="cont_banner">
+			<section class="top-bar-section top-bar-section-landing">
+				<ul class="right">
+					{% if user.is_authenticated %}
+									{%if user|get_count_all_notifications  > 0 %} 
+										<li>
+											<span  class="round label noti-icon-all">
+												<i class="fa fa-bell " style="color:#32475A !important;"></i>
+											</span>
+											<span class="round label noti-num">
+												<strong style="color:#32475A !important;">{{user|get_count_all_notifications}}</strong>
+											</span>
+										</li>
+									{%endif%}
+					
+				<li class="has-dropdown top-nav-element">
+					 <a  href="/perfil/{{ user.id }}"> 
+						  {% if user.userprofile.avatar_url.url_60x60 %}
+					       <img src="{{ user.userprofile.avatar_url.url_60x60 }}" class="img-user-small">
+							{% else %}
+					       <img src="http://s22.postimg.org/sgwv8z7kx/url.jpg" class="img-user-small">
+					     {% endif %}
+					     <!--<span class="round label mss-notif"><strong>0</strong></span> { user.username }} --></a>
+					 <ul class="dropdown">
+						  <li><a href="/logout/"><i class="fa fa-sign-out"></i> Cerrar sesión</a></li>
+					</ul>
+				</li>
+				
+	
+					{% else %}
+
+					<li class="top-nav-element ml8"><a class="btn button btn_registrar" href="{% url 'register' %}">Registrarte</a></li>
+					
+					<li class="top-nav-element ml8"><a class="btn button btn_registrar" href="{% url 'login' %}">Ingresar</a></li>
+
+
+					{% endif %}
+				</ul>
+
+
+				<!-- Left Nav Section -->
+
+				<ul class="left ">					
+					<li><a href="/"> <i class="ml8"><img src="{% static 'img/favicon-32x32-b.png' %}" alt="Troca.cc"></i> <b class="titulo_troca">TROCA.CC</b></a></li>
+					<li >
+					<form method="get" id="form_busqueda" action="/busqueda/a"> <input style="background-image: url('{% static 'img/searchicon.png' %}');"  id="barra-busqueda" type="text" name="buscar" value="" placeholder="Busca proyectos para trocar"  onkeypress="busquedaFunction()" required></form></li>
+					<script>
+						function busquedaFunction() {
+							busc=document.getElementById("barra-busqueda").value;
+							document.getElementById("form_busqueda").action="/busqueda/"+busc+"/";
+// 								alert(document.getElementById("form_busqueda").action);
+						}
+						</script>
+				</ul>
+
+				<ul class="left show-for-medium-only">
+					<li><a href="/colabora/trueque/"><i class="fa fa-search title-icon"></i></a></li>
+					<li><a href="/crea/"><i class="fa fa-plus-circle title-icon"></i></a></li>
+					{% if user.is_authenticated %}
+					<li><a href="/encuentra/"><i class="fa fa-exchange title-icon"></i></a></li>
+					{% endif %}
+
+				</ul>
+
+			</section>		
+<!-- ////////////// comienzo del landing page  ////////////////	 -->
+	<!-- Implemente el banner -->
+   {% include "banner.html" %}
+</div>		
+		<!-- 	div que contiene la sección	 -->
+		<div>
+			
+			<div class="row contenedor_troca landing">
+					<h5 class="raleway regular txt24 centrar_titulo ">TROCA.CC ES UNA PLATAFORMA QUE PERMITE EL INTERCAMBIO DE CONOCIMIENTOS Y HABILIDADES ENTRE CREADORES CULTURALES PARA LA REALIZACIÓN DE PROYECTOS EN EL CAMPO CREATIVO.</h5>
+				<h5> <a href="" class="btn button btn_registrar"><pre class="raleway light txt24 mrl20">REGISTRATE</pre></a></h5>
+			</div>
+			
+			<div class="descripcion_proyectos" >
+				<div class="row contenedor_troca imagen_landing_descripcion_proyecto" style="background-image: url('{% static "img/landing_proyecto.png"%}');">
+					<div class="small-8 large-8 columns ">
+						<div class="small-0 large-2 columns "> <br>	</div>
+						<div class="small-12 large-8 columns "> 
+							<h5 class="antonio-regular txt38">CREA UN PROYECTO</h5>
+							<p class="raleway regular txt20">
+								Crear un proyecto en el mundo creativo puede ser una
+								tarea compleja, necesitas de varias habilidades o
+								saberes para llevarlo a cabo y no siempre dispones del
+								tiempo para aprender y además producir. Publica tus
+								proyectos en <strong>Troca.cc</strong> para que otras personas te 
+								puedan colaborar. Es fácil, <strong>Troca.cc</strong> permite
+								<span class="line-through">intercambiar</span> trocar conocimientos y habilidades para 
+								realizar proyectos creativos.
+							</p>
+							<h5 class="antonio-regular txt38">COLABORA EN UN PROYECTO</h5>
+							<p class="raleway regular txt20">
+								<strong>Troca.cc</strong> es una red social colaborativa en la que encontarás
+								una comunidad de personas con intereses creativos. <br>
+								Muchos proyectos requieren de tu talento y muchas personas están dispuestas a colaborarte.
+								Crear y trocar en <strong>Troca.cc</strong> ahora es posible.
+							</p>
+							<br>
+						</div>
+						<div class="small-0 large-2 columns "> <br>	</div>
+					</div>
+					<div class="small-4 large-4 columns ">
+						<br>
+					</div>
+				</div>	
+			</div>			
+			
+			<div class="row contenedor_troca encuentra_troca" style="background-image: url('{% static "img/descubre_troca.png"%}');">
+				<h5  class="antonio-regular txt38">ENCUENTRA EN TROCA</h5>
+				<br>
+				
+				<p>
+					{%for cat in hab %}
+						<a href="/descubre/{{cat.category.slug}}/{{cat.slug}}">
+							<span class="white-main antonio-light  txt26" title="{{cat.title}}">{{ cat.title}}, </span>
+						</a>
+					{%endfor%}
+				</p>
+				
+			</div>
+			
+			<div class="row contenedor_troca colaboraciones_destacadas">
+				<br>
+				<ul class="banner-orbit" data-orbit data-options="slide_number:false;
+				animation:slide;
+				pause_on_hover:false;
+				animation_speed:1200;
+				animation_speed:3000;
+				timer_speed: 10000;
+				navigation_arrows:false;">
+				{% for coll in last_collabs %} 
+
+				<li>
+					<div class="row">
+						<div class="small-2 large-2 columns "><br></div>
+						<div class="small-8 large-8 columns ">
+							<h5 class="raleway bold txt20">Ahora {{coll.autor.first_name}} y {{coll.collaborator.first_name}} han trocado habilidades y
+								{%if coll.collaboratorProject%}los dos {%endif%} podrán sacar adelante sus proyectos, ¿Qué esperas para realizar el tuyo?
+							</h5>
+							<hr>
+						</div>
+						<div class="small-2 large-2 columns "><br></div>
+					</div>
+					
+					<div class="row">
+						<div class="small-12 medium-0 large-2 columns ">
+							<br>
+						</div>
+						
+						<div class="small-12 medium-6 large-4 columns ">
+							<h5 class="raleway bold txt30">AUTOR DEL PROYECTO</h5>
+							<div class="landing_colaboration">
+								<section class="top">	
+									<ul class="inline-list">
+										<li style="max-width:20%;">
+											<a href="/perfil/{{ coll.autor.id }}">
+												<div class="img-container-user circular" style="background-image: url('{{ coll.autor.userprofile.avatar_url.url_700x700 }}');"></div>
+											</a>
+										</li>
+										<li style="max-width:75%;">
+											<a href="/perfil/{{ coll.autor.id }}"><h5 class="mb0">{{coll.autor.first_name}} {{coll.autor.last_name}}</h5></a>
+											<p>"{{ coll.autor.userprofile.about}}"</p>
+										</li>
+									</ul>
+
+								</section>
+
+								<section class="landing_colaboration">
+									
+
+									<a href="/proyecto/{{ coll.project.user }}/{{ coll.project.slug }}"><h5 class="raleway bold txt20" >Proyecto:  {{coll.project.title}}</h5></a>
+									<p>"{{coll.project.summary}}"</p>
+
+									{% if coll.collaboratorProject%}
+									
+									<p> {{coll.autor.first_name}} ha trocado su habilidad de
+										<i class="label-cat">
+											<a href="/descubre/{{coll.autorSkill.category.slug}}/{{coll.autorSkill.slug}}">
+												<span class="label-min label-min-supp" title="{{coll.autorSkill.title}}">{{coll.autorSkill.title}}</span>
+											</a>
+										</i>   
+										<br> a cambio de la habilidad de  
+										<i class="label-cat">
+											<a href="/descubre/{{coll.collaboratorSkill.category.slug}}/{{coll.collaboratorSkill.slug}}">
+												<span class="label-min label-min-supp" title="{{coll.collaboratorSkill.title}}">{{coll.collaboratorSkill.title}}</span> 
+											</a>
+										</i>
+									</p>
+									{%else%}
+									<p>
+<!-- 										{coll.collaborator.first_name}} ha recibido  -->
+									</p>
+									{%endif%}
+								</section>
+							</div>	
+						</div>
+						
+						<div class="small-12 medium-6 large-4 columns ">
+							<h5 class="raleway bold txt30">COLABORADOR DEL PROYECTO</h5>
+							<div class="landing_colaboration">
+								<section class="top">	
+									<ul class="inline-list">
+										<li style="max-width:20%;">
+											<a href="/perfil/{{ coll.collaborator.id }}">
+												<div class="img-container-user circular" style="background-image: url('{{ coll.collaborator.userprofile.avatar_url.url_700x700 }}');"></div>
+											</a>
+										</li>
+										<li style="max-width:75%;">
+											<a href="/perfil/{{ coll.collaborator.id }}"><h5 class="mb0">{{coll.collaborator.first_name}} {{coll.collaborator.last_name}}</h5></a>
+											<p>"{{ coll.collaborator.userprofile.about}}"</p>
+										</li>
+									</ul>
+
+								</section>
+
+								<section class="landing_colaboration">
+									{% if coll.collaboratorProject%}
+
+									<a href="/proyecto/{{ coll.collaboratorProject.user }}/{{ coll.collaboratorProject.slug }}"><h5>Proyecto:  {{coll.collaboratorProject.title}}</h5></a>
+									<p>"{{coll.collaboratorProject.summary}}"</p>
+
+									<p> {{coll.collaborator.first_name}} ha trocado su habilidad de
+										<i class="label-cat">
+											<a href="/descubre/{{coll.collaboratorSkill.category.slug}}/{{coll.collaboratorSkill.slug}}">
+												<span class="label-min label-min-supp" title="{{coll.collaboratorSkill.title}}">{{coll.collaboratorSkill.title}}</span>
+											</a>
+										</i>   
+										<br> a cambio de la habilidad de  
+										<i class="label-cat">
+											<a href="/descubre/{{coll.autorSkill.category.slug}}/{{coll.autorSkill.slug}}">
+												<span class="label-min label-min-supp" title="{{coll.autorSkill.title}}">{{coll.autorSkill.title}}</span> 
+											</a>
+										</i>
+									</p>
+									{%else%}
+									<p>
+										{{coll.collaborator.first_name}} ha donado su habilidad de 
+										<i class="label-cat">
+											<a href="/descubre/{{coll.collaboratorSkill.category.slug}}/{{coll.collaboratorSkill.slug}}">
+												<span class="label-min label-min-supp" title="{{coll.collaboratorSkill.title}}">{{coll.collaboratorSkill.title}}</span>
+											</a>
+										</i>
+									</p>
+									{%endif%}
+								</section>
+							</div>							
+						</div>
+						<div class="small-12 medium-0 large-2 columns ">
+							<br>
+						</div>
+					</div>
+					
+
+
+					</li>
+
+					{% endfor %} 
+				</ul>
+			</div>
+			
+			
+			<div class="seccion_proyectos_landing">	
+				<h5  class="antonio-regular txt38">PROYECTOS DESTACADOS</h5>
+				<br>
+				<div id="container" class="row mb5">   
+					{% for project in object_list %} 
+						{% include "category_view_page.html" with object=project skills=skillsP isIndex=True %}
+					{% endfor %} 
+				</div>
+				<div class="text-center">
+					<a href="/descubre/" class="button btn_registrar mb25">Ver más proyectos</a>
+				</div>
+			</div>
+			
+			
+			
+			
+			
+			
+			
+			
+		</div>
+<!-- 	fin del div que contiene la sección	 -->
+		
+	  
+	<!-- Implemente la sección de highlights -->
+	
+<!--    {  include "highlight.html" %} -->
+
+</div>
+
+    <script type="text/javascript">
+    
+        // ------ Start isotope
+    
+    $('#container').isotope({
+        itemSelector: '.project_container',
+          getSortData: {
+            rate: '.rate parseInt',
+             date: function( itemElem ) { // function
+              var _date = $( itemElem ).find('.date').text();
+              return Date.parse(_date);
+            }
+            }
+    });
+    
+    $( document ).ready(function() {
+        
+        // ------ Sort isotope wall bt date (DEFAULT OPTION)
+        
+        $('#container').isotope({ sortBy : 'date', sortAscending: false });
+        
+                // ------ FIX || Display only one alert of colaboration
+                                        
+        $( ".colabOptions" ).each(function( index ) {
+                                            
+            $( this ).children().first().removeClass('hidden');
+                                        
+        });
+        
+        // ------ HOVER || on every poject main image
+        
+        $( ".img-container2-panel" ).each(function( index ) {
+                                            
+            $( this ).hover(function() {
+                    $( this ).find(".overlay").fadeIn();
+                }, function() {
+                    $( this ).find(".overlay").fadeOut();
+                }
+            );
+                                        
+        });
+         
+    });
+    
+  
+
+    </script>  
+
+<!-- ////////////// Fin del landing page  ////////////////	 -->
+
+
+	{# Custom JS #} 
+	
+	{% block body_js %}
+
+	<script type="text/javascript">
+		var _urq = _urq || [];
+		_urq.push(['initSite', 'cc8a12b8-8355-4050-b143-5fb1604c333a']);
+		(function() {
+			var ur = document.createElement('script');
+			ur.type = 'text/javascript';
+			ur.async = true;
+			ur.src = ('https:' == document.location.protocol ? 'https://cdn.userreport.com/userreport.js' : 'http://cdn.userreport.com/userreport.js');
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(ur, s);
+		})();
+	</script>
+
+	{% endblock body_js %} {# Foundation JS #} {% block foundation_js %}
+	<script src="{% static "foundation/js/vendor/modernizr.js" %}"></script>
+	<script src="{% static "foundation/js/foundation.min.js" %}"></script>
+	<script src="{% static "foundation/js/foundation/foundation.magellan.js" %}"></script>
+	<script src="{% static "foundation/js/foundation/foundation.tooltip.js" %}"></script>
+
+	{% endblock foundation_js %} {# Init Foundation #} {% block foundation_js_init %}
+	<script>
+		
+		;(function ($, window, document, undefined) {
+  'use strict';
+
+  Foundation.libs.offcanvas = {
+    name : 'offcanvas',
+
+    version : '5.2.2',
+
+    settings : {
+      open_method: 'overlap',
+      close_on_click: true  
+    },
+
+    init : function (scope, method, options) {
+      this.bindings(method, options);
+    },
+
+    events : function () {
+      var self = this,
+          S = self.S;
+      if (this.settings.open_method === 'move'){
+        S(this.scope).off('.offcanvas')
+          .on('click.fndtn.offcanvas', '.left-off-canvas-toggle', function (e) {
+            self.click_toggle_class(e, 'move-right');
+          })
+          .on('click.fndtn.offcanvas', '.left-off-canvas-menu a', function (e) {
+            var settings = self.get_settings(e)
+            if (settings.close_on_click)
+              S(".off-canvas-wrap").removeClass("move-right");
+          })
+          .on('click.fndtn.offcanvas', '.right-off-canvas-toggle', function (e) {
+            self.click_toggle_class(e, 'move-left');
+          })
+          .on('click.fndtn.offcanvas', '.right-off-canvas-menu a', function (e) {
+            var settings = self.get_settings(e)
+            if (settings.close_on_click)
+              S(".off-canvas-wrap").removeClass("move-left");
+          })
+          .on('click.fndtn.offcanvas', '.exit-off-canvas', function (e) {
+            self.click_remove_class(e, 'move-left');
+            self.click_remove_class(e, 'move-right');
+          })
+      } else if (this.settings.open_method === 'overlap') {
+        S(this.scope).off('.offcanvas')
+          .on('click.fndtn.offcanvas', '.left-off-canvas-toggle', function (e) {
+            self.click_toggle_class(e, 'offcanvas-overlap');
+          })
+          .on('click.fndtn.offcanvas', '.left-off-canvas-menu a', function (e) {
+            var settings = self.get_settings(e)
+            if (settings.close_on_click)
+              S(".off-canvas-wrap").removeClass("offcanvas-overlap");
+          })
+          .on('click.fndtn.offcanvas', '.right-off-canvas-toggle', function (e) {
+            self.click_toggle_class(e, 'offcanvas-overlap');
+          })
+          .on('click.fndtn.offcanvas', '.right-off-canvas-menu a', function (e) {
+            var settings = self.get_settings(e)
+            if (settings.close_on_click)
+              S(".off-canvas-wrap").removeClass("offcanvas-overlap");
+          })
+          .on('click.fndtn.offcanvas', '.exit-off-canvas', function (e) {
+            self.click_remove_class(e, 'offcanvas-overlap');
+            self.click_remove_class(e, 'offcanvas-overlap');
+          })
+      } else {
+        return;
+      }
+    },
+
+    click_toggle_class: function(e, class_name) {
+      e.preventDefault();
+      this.S(e.target).closest('.off-canvas-wrap').toggleClass(class_name);
+    },
+
+    click_remove_class: function(e, class_name) {
+      e.preventDefault();
+      this.S('.off-canvas-wrap').removeClass(class_name);
+    },
+
+    get_settings: function(e) {
+      var offcanvas = this.S(e.target).closest('[' + this.attr_name() + ']')
+      return offcanvas.data(this.attr_name(true) + '-init') || this.settings;
+    },
+
+    reflow : function () {}
+  };
+}(jQuery, window, window.document));
+		
+		$(document).foundation();
+	</script>
+	{% endblock foundation_js_init %}
+</body>
+	
+	
+<footer>
+	<!-- Footer -->
+<div class="row contenedor_troca contenido">
+<div>
+	
+	
+	<div class="footer-bkg">	
+		<div class="row">
+		<div class="small-11 large-11 columns">
+			<a  href="/">TROCA.CC</a> <span class="separador">|</span> <a class="acerca_de" href="/acerca_de_troca">Acerca de troca</a> 
+			<br>
+			Troca está hecha bajo la licencia Creative Commons Reconocimiento-NoComercial 4.0
+			</div>
+			<div class="small-1 large-1 columns">
+				<a class="btn_fb" href="https://www.facebook.com/trocabeta"><i class="fa fa-facebook-square"></i></a>
+			</div>
+		</div>
+	</div>
+	
+	
+	
+<!-- 	<div class="foot-nav red-background white-main ">
+		<div class="row">
+			<div class="small-4 large-4 columns">
+				<ul class="no-bullet">
+					<li>
+						<p><b>SOBRE TROCA</b></p>
+					</li>
+					<li>
+						<a class="a-white" href="{% url 'about' %}">
+							<p class="paragraph">Qué es Troca</p>
+						</a>
+					</li>
+					<li>
+						<a class="a-white" href="{% url 'ourpeople' %}">
+							<p class="paragraph">Quiénes somos</p>
+						</a>
+					</li>
+					<li>
+						<a class="a-white" href="http://troca.cc/proyecto/genitor06/trocabeta/">
+							<p class="paragraph">Voluntariado</p>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="small-4 large-4 columns">
+				<ul class="no-bullet">
+					<li>
+						<p><b>NAVEGACIÓN</b></p>
+					</li>
+					<li>
+						<a class="a-white" href="/descubre/">
+							<p class="paragraph">Descubre proyectos</p>
+						</a>
+					</li>
+					<li>
+						<a class="a-white" href="/crea/">
+							<p class="paragraph">Crea un proyecto</p>
+						</a>
+					</li>
+					<li>
+						<a class="a-white" href="/encuentra/">
+							<p class="paragraph">Conoce colaboradores</p>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="small-4 large-4 columns">
+				<ul class="no-bullet">
+					<li>
+						<p><b>REDES SOCIALES</b></p>
+					</li>
+					<li>
+						<a class="a-white" href="https://www.facebook.com/trocabeta">
+							<p class="paragraph">Facebook</p>
+						</a>
+					</li>
+					<li>
+						<a class="a-white" href="#">
+							<p class="paragraph">Twitter</p>
+						</a>
+					</li>
+					<li>
+						<a class="a-white" href="https://github.com/jovencoda/troca">
+							<p class="paragraph">Github</p>
+						</a>
+					</li>
+				</ul>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="black-bkg" style=" padding-bottom: 40px;">
+		<div class="row text-center padrl15">
+			<h1><a href="/"><img class="logo" src="{% static "img/logo2white.png" %}" alt="Troca"></a></h1>
+			<p class="white-main">Troca está hecha bajo la licencia <b>Creative Commons Reconocimiento-NoComercial 4.0</b></p>
+			<p class="white-main">Una página de <b><a href="https://www.behance.net/jovencoda">Bulls & Brothers</a></b></p>
+		</div>
+	</div> -->	
+	
+</div>		
+</div>
+</footer>
+
+
+
+</html>

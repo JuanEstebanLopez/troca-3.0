@@ -1,0 +1,179 @@
+{% load phileo_tags %}
+{% load humanize %}
+{% load sanitizer %}
+{% load get_skills %}
+
+
+<!-- Reveal Modals begin -->
+<div id="Modal-{{project.slug}}" class="reveal-modal tiny proyeco-modal" data-reveal aria-labelledby="ModalTitle-{{project.slug}}" aria-hidden="true" role="dialog">
+  {% get_user_profile project.user  as author %}
+	{%if user.is_authenticated%}
+		{% get_user_profile user as loggedUser%}
+	{%endif%}
+	
+  {% include "project_vista.html"  with user=user userprofile=loggedUser object=project isReverseMatch=isReverseMatch hasProfile=hasProfile isMatch=isMatch author=author collaborators=collaborators rev_collaborators=rev_collaborators project=project author=author vista_min=True%}	
+  <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+</div>
+<!-- Vista del proyecto -->
+	<div class="large-4 medium-6 project_container columns end">
+
+
+					<div class="panel project_thumb bkg-white-shade hvr-shadow-radial">
+
+<!--             <a href="/proyecto/{ project.user }}/{ project.slug }}"> -->
+							<a href="#" data-reveal-id="Modal-{{project.slug}}">
+                <div class="img-container2-panel" style="background-image: url('{{ project.thumbnail_url.url_700x700 }}');">
+                  <!--<div class="overlay hidden"><i class="fa fa-search"></i></div>-->
+
+
+
+									{% if not project.isActive %}
+
+									<div class="status bkg-white-shades black-main">
+										<span data-tooltip aria-haspopup="true" class="has-tip tip-right black-main" title="Este proyecto ha caducado">
+										<i class="fa fa-hourglass-end"></i>
+										</span>
+									</div>
+
+									{% elif project.num_needs >= 100 %}
+
+									<div class="status bkg-white-shades black-main">
+										<span data-tooltip aria-haspopup="true" class="has-tip tip-right black-main" title="Este proyecto está completo">
+										<i class="fa fa-lock"></i>
+										</span>
+									</div>
+
+									{% elif loggedUser|user_gives:project >= 2 %}
+
+									<div class="status blue-background">
+										<span data-tooltip aria-haspopup="true" class="has-tip tip-right white-main" title="Puedes trocar con este proyecto">
+										<i class="fa fa-exchange"></i>
+										</span>
+									</div>
+									{% elif loggedUser|user_gives:project >= 1 %}
+
+									<div class="status blue-background">
+										<span data-tooltip aria-haspopup="true" class="has-tip tip-right white-main" title="Puedes donar una o más <br> habilidades a este proyecto">
+										<i class="fa fa-gift"></i>
+										</span>
+									</div>
+
+									{% elif loggedUser|user_gives:project == 0 %}
+<!-- 									<div class="status bkg-white-shades black-main"><i class="fa fa-times-circle"></i></div> -->
+									{% endif %}
+									
+									{% if  isIndex %}
+									<div class="transparente">
+									Ver más sobre este proyecto.
+									</div>
+									{% endif %}
+
+                </div>
+           </a>
+
+			<div class="project-card-content pad15">
+						 <h4 class="titulo-proyecto-miniatura">
+							 <span class="estado-proyecto
+								{% if not project.isActive %}
+									estado-proyecto-caducado" title="Este proyecto ha caducado
+								{% elif project.num_needs >= 100 %}
+									estado-proyecto-terminado" title="Este proyecto está completo
+								{% elif loggedUser|user_gives:project >= 2 %}
+									estado-proyecto-abierto" title="Puedes trocar con este proyecto
+								{% elif loggedUser|user_gives:project >= 1 %}
+									estado-proyecto-abierto" title="Puedes donar una o más habilidades a este proyecto
+								{% elif loggedUser|user_gives:project == 0 %}
+									" title="No puedes trocar con este proyecto
+								{% else %}
+									{% if user.is_authenticated %}
+                    {% ifequal user.username project.user.username %}
+									" title="Este proyecto es tuyo
+									{% endifequal %}
+										{% else %}
+											" title="No has iniciado sesión
+                    {% endif %}
+								{% endif %}
+										 "><i class="fa fa-circle"></i></span>
+
+							 <a href="/proyecto/{{ project.user }}/{{ project.slug }}" class="titulo-proyecto-miniatura">{{ project.title|truncatechars:26 }}</a> <small>
+
+    				    {% if user.is_authenticated %}
+									{% ifequal user.username project.user.username %}
+											<span data-tooltip aria-haspopup="true" class="has-tip"title="Editar el proyecto">
+													<a href="/proyecto/editar/{{ project.user.username }}/{{ project.slug }}"><i class="fa fa-pencil-square-o red-main"></i></a>
+											</span>
+									{% endifequal %}
+				        		</small>
+
+					{% likes user as like_list %}
+							<p class="right"><a><i id="like_{{project.slug}}" class="fa fa-heart-o{% for like in like_list %}{% ifequal object  like.receiver %}no fa-heart {%endifequal%}{% endfor %}
+							"></i> {{ object|likes_count }}</a></p>
+				<form id="form-like_{{project.slug}}" action="/likes/like/{{ 'project' |get_type }}:{{ object.id }}/" method="post">{% csrf_token %}</form>
+			<script>
+				$('#like_{{project.slug}}').click(function() {
+				$("#form-like_{{project.slug}}").submit();
+				});
+				</script>
+								{% else %}
+				        	</small>
+									<p class="right"><b><i id="like_{{project.slug}}" class="fa fa-heart-o"></i> {{ object|likes_count }}</b></p>
+              	{% endif %}
+
+
+
+
+
+				</h4>
+
+						<h6 class="subheader small">Publicado por <a href="/perfil/{{ project.user.id }}"class="user-link">{{ object.user|truncatechars:20 }}</a> </h6>
+
+								{% autoescape off %}
+                      <p>{{ object.summary|strip_html }}</p>
+                {% endautoescape %}
+
+                            <ul class="meta">
+                                <li class="date">{{ project.date|naturalday }}</li>
+                                <li class="rate">{{ project|likes_count }}</li>
+                                <li class="expire">{{ project.expire_date }}</li>
+                                <ul class="project-needs">
+                                       {% for cat in project.category.all %}
+                                        <li>{{ cat.slug }}</li>
+                                       {% endfor %}
+                                </ul>
+                            </ul>
+
+			</div>
+
+		<!--
+			<div class="project-card-footer">
+				<p class="left"><b><i id="like" class="fa fa-heart-o"></i> { object|likes_count }}</b></p>
+				<p class="right"><i class="fa fa-calendar"></i> { project.date|naturalday }}</p>
+			</div>
+		-->
+			<div class="project-card-footer">
+				{% if isIndex %}
+				<div style="font-size:12px; margin-bottom:8px;"> <hr style="margin:0px;">  Si tienes alguna de estas habilidades, troca.</div>
+				
+				{% endif %}
+			<ul class="inline-list">
+				<!-- 	Necesidades del proyecto -->
+					{% for cat in object.category.all %}
+								<li class="label-cat">
+									<a href="/descubre/{{cat.category.slug}}/{{cat.slug}}">
+										<span class=" label-min" title="{{cat.title}}">{{ cat.title |truncatechars:20 }}</span>
+									</a>
+								</li>						
+					{% endfor %}				
+				<!--	Necesidades ya suplidas del proyecto -->
+					{% for cat in object.category_supp.all %}
+								<li class="label-cat">
+									<a href="/descubre/{{cat.category.slug}}/{{cat.slug}}">
+										<span class="label-min label-min-supp"   title="{{cat.title}}">{{ cat.title |truncatechars:20 }}</span>
+									</a>
+								</li>						
+					{% endfor %}
+					</ul>
+			</div>
+		</div>
+
+	</div>

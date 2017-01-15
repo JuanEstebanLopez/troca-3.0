@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load url from future %} 
+{% load get_skills %}
+{% block title %}troca.beta | Colaboraciones {% endblock title %}
+
+{% block base_body %}
+<div class="bkg-blue-main" >
+{% block cat_header %}
+<div class="botborder" >
+     <div class="row ptb25 mrl20 bkg-white-main">
+			   <h6 class="titulo_crear">Mis Notificaciones</h6>
+    </div>
+</div>
+{% endblock cat_header %}
+
+<div class="row pb25 mrl20" style="padding:0px 50px;">
+	
+	<div id="container" class="row pb400 pt25">
+		
+			
+			{% for noti in notificaciones %}
+					{% include "notificaciones_view_elemento.html" with noti=noti  %}
+		 {% empty %}
+		<h1 class="text-center">
+			 <i class="fa fa-exclamation-circle"></i>
+		</h1>
+		<h6 class="subheader text-center">No tienes notifiaciones nuevas.</h6>		
+			{% endfor %}
+			
+	
+	</div>
+			
+</div>
+
+</div>
+{% endblock base_body %}

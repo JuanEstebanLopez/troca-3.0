@@ -1,0 +1,97 @@
+
+{% extends "base.html" %}
+{% load social_share %} 
+{% block title %}troca.beta | Descubre proyectos {% endblock title %}
+
+{% block base_body %} 
+<div class="bkg-blue-main" >
+{% block cat_header %}
+<div class="botborder">
+  <div class="row ptb25 mrl20 bkg-white-main">
+    <h6 class="titulo_crear">Resultados de: {{busqueda}}</h6>
+      <dl class="sub-nav mrl20">
+      <dd id="btn_proyectos" class="active"><a href="#busqueda_proyectos" onclick="filtro('proyectos')">Proyectos</a></dd>
+      <dd id="btn_usuarios" ><a href="#busqueda_usuarios" onclick="filtro('usuarios')"> Usuarios</a></dd>
+    </dl>
+
+  </div>
+</div>
+  <script type="text/javascript">
+    function filtro(tipo){
+      if(tipo=="usuarios"){
+        $('#btn_usuarios').addClass( "active");
+        $('#btn_proyectos').removeClass( "active");
+        $('#busqueda_usuarios').removeClass("hidden");
+        $('#busqueda_proyectos').addClass( "hidden");
+      }else if(tipo=="proyectos"){
+        $('#btn_usuarios').removeClass( "active");
+        $('#btn_proyectos').addClass( "active");
+        $('#busqueda_usuarios').addClass( "hidden");
+        $('#busqueda_proyectos').removeClass( "hidden");
+        }
+    }
+  </script>
+{% endblock cat_header %}
+<div class="row pb25 mrl20" style="padding:0px 50px;">
+  
+  <br>
+  <div id="" >
+    <div id="busqueda_proyectos" class=" container row pt25 resultados">
+      {% for project in proyectos %} {% include "category_view_page.html" with object=project %} {% empty %}
+      <h6 class="subheader text-center"><i class="fa fa-life-ring"></i> No se encontraro proyectos por "{{busqueda}}"</h6> {% endfor %}
+    </div>  
+    <br>
+    <div id="busqueda_usuarios" class="container row pt25 resultados hidden">
+      {% for us in usuarios %}{% include "user_view_page.html" with object=us  %}{% empty %}
+      <h6 class="subheader text-center"><i class="fa fa-life-ring"></i>  No se encontraro usuarios por "{{busqueda}}"</h6> {% endfor %}
+    </div>
+  </div>
+  
+<br>
+</div>
+
+<!-- <div class="botborder topborder prl25">
+  <div class="row ptb25 mrl20 ">
+    <h1>Categorías</h1>
+    <p class="paragraph">Navega a través de las categorías para econtrar otros proyectos</p>
+
+    <ul class="button-group">
+
+      { for key, values in categories.items %} { for x in values %}
+      <li><a href="/descubre/{{ key.slug }}" class="button radius secondary">{ key.title }} ( { x }} )</a></li>
+      { endfor %} { endfor %}
+
+    </ul>
+  </div>
+</div> -->
+</div>
+  
+
+<script type="text/javascript">
+  // ------ Start isotope
+
+  $('#container').isotope({
+    itemSelector: '.project_container',
+    getSortData: {
+      rate: '.rate parseInt',
+      date: function(itemElem) { // function
+        var _date = $(itemElem).find('.date').text();
+        return Date.parse(_date);
+      }
+    }
+  });
+
+
+  $(document).ready(function() {
+    // ------ HOVER || on every poject main image
+    $(".img-container2-panel").each(function(index) {
+      $(this).hover(function() {
+        $(this).find(".overlay").fadeIn();
+      }, function() {
+        $(this).find(".overlay").fadeOut();
+      });
+    });
+  });
+</script>
+
+{% endblock base_body %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block base_body %}
+<!-- TOP BANNER DETAILS -->
+<div class="bkg-blue-main" style="padding:50px">
+  <div class="row">
+    {% csrf_token %}
+    {% crispy form %}
+  </div>
+</div>
+<script>
+  $("form").validate();
+</script>
+{% endblock base_body %}

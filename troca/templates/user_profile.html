@@ -1,0 +1,197 @@
+{% extends "base.html" %} 
+{% block title %}troca.beta | {{ object.user.username }} {% endblock title %} 
+{% load phileo_tags %} 
+{% block base_body %}
+{% load get_skills %}
+
+
+<!-- TOP BANNER DETAILS -->
+<div class="bkg-blue-main" >
+<div class="botborder" >
+<div class="general-view row bkg-white-main">
+
+      <div class="row">
+
+        <div class="large-2 medium-3 columns">
+
+          <div class="img-container-user-profile  circular" style="background-image: url('{{ object.avatar_url.url_700x700 }}');"></div>
+
+					{% if object.facebook or object.twitter %}
+						<ul class=" social-icon">
+							{% if object.facebook %}
+								<li><a href="{{ object.facebook }}"><i class="fa fa-facebook-square"></i></a></li>
+							{% endif %} {% if object.twitter %}
+								<li><a href="{{ object.twitter }}"><i class="fa fa-twitter-square"></i></a></li> 
+							{% endif %}              
+            </ul>
+            {% endif %}
+					
+        </div>
+
+        <div class="large-8 medium-9 columns">
+          <div class="">
+						<div>
+            <h2 class="raleway bold txt30"> {{ object.user.first_name }} {{ object.user.last_name }}
+<!-- 							{ object.user.username }}  -->
+							
+							<small class="right">
+                {% if user.is_authenticated %} 
+                            {% ifequal user.username object.user.username %}
+                                <span data-tooltip aria-haspopup="true" class="has-tip"title="Editar el perfil">
+                                    <a href="/configuracion/{{ object.user.username }}/">
+																		<!-- <i class="fa fa-pencil-square-o red-main"></i> -->
+																			Editar
+																	</a> &nbsp
+                                </span>
+                            {% else %}
+                            <a href="#"><i class="fa fa-envelope-o"></i></a> 
+                            {% endifequal %}
+															<a>	
+																{% likes user as like_list %}
+																		<i id="like" class="fa fa-heart-o{% for like in like_list %}{% ifequal object  like.receiver %}no fa-heart {%endifequal%}{% endfor %}
+																		"></i>	{{ object|likes_count }}
+															</a> 
+								
+								{%else%}
+									<a>
+											<i id="like" class="fa fa-heart-o"></i>	{{ object|likes_count }}
+									</a> 
+                {% endif %}  
+                
+
+							
+					 </small>
+							
+							</h2> 
+							</div>	
+							
+						
+<!--             <h6 class="subheader">{ object.user.first_name }} { object.user.last_name }}</h6> -->
+
+            <form id="form-like" action="/likes/like/{{ contType }}:{{ object.id }}/" method="post">{% csrf_token %}</form>
+
+            <script>
+              $('#like').click(function() {
+                $("#form-like").submit()
+                $("#like").addClass("red-main")
+              });
+
+              $('#like').mouseover(function() {
+                $("#like").addClass("red-main")
+              });
+
+              $("#like")
+                .mouseover(function() {
+                  $("#like").addClass("red-main")
+                })
+                .mouseout(function() {
+                  $("#like").removeClass("red-main")
+                });
+            </script>
+
+            <p class="raleway regular txt16">{{ object.about }}</p>            
+          </div>
+
+          <h4 class="mt10">
+						<!-- <i class="fa fa-tags "></i> -->
+						Habilidades:</h4>
+
+          <ul class="inline-list">
+            {% for cat in object.category.all %}
+            	<li class="label-cat">
+							<a href="/descubre/{{cat.category.slug}}/{{cat.slug}}">
+								<span class="label-min ">{{ cat.title }}</span>
+							</a>
+						</li>						
+            {% endfor %}
+          </ul>
+					<div class="info-cantidad">
+						<div class="border-right"><h1 class="raleway bold">{{object | cant_proyectos }}</h1> <span class="raleway bold txt16">Proyectos creados</span> </div>
+						<div><h1 class="raleway bold">{{object | cant_trueques }}</h1> <span class="raleway bold txt16"> Trueques realizados</span> </div>
+					</div>
+					
+        </div>
+				<div class="large-2 medium-1 columns">
+				</div>
+      </div>
+	
+
+    </div>
+	</div>
+
+
+    <!-- BODY CONTENT -->
+
+
+    <!-- Implemente la sección de projects_list -->
+    <div class=" prl25">
+			<div class="row mb40 prl25">
+			 {% if user.is_authenticated %}
+					{% ifequal user.username object.user.username %}
+					<h4 class=" ptb25">Tus proyectos</h4>
+					{%else%}
+					<h4 class=" ptb25">Sus proyectos</h4>
+					{%endifequal %}
+			{%else%}
+				<h4 class=" ptb25">Sus proyectos</h4> 
+			{%endif%}
+			</div> 
+			{% if hasProjects%}
+      <div id="container" class="row">
+        {% for project in projects.all %} {% include "category_view_page.html" with object=project %} {% endfor %}
+      </div>
+<!--       { include "_pagination.html" %}  -->
+			{% else %}
+      <h6 class="subheader text-center pb400 mb0"><i class="fa fa-refresh"></i> Lo sentimos, este usuario aún no tiene proyectos</h6> {% endif %}
+    </div>
+
+		
+	<!-- Proyectos con los que ha colaborado -->
+    {% if hasCollaborations%}
+		<div class="bkg-white-main prl25">
+			<div class="row mb40 prl25">
+			 {% if user.is_authenticated %}
+					{% ifequal user.username object.user.username %}
+					<h4 class=" ptb25">Proyectos en los que colaboras</h4>
+					{%else%}
+					<h4 class=" ptb25">Proyectos en los que ha colaborado</h4>
+					{%endifequal %}
+			{%else%}
+				<h4 class=" ptb25">Proyectos en los que ha colaborado</h4> 
+			{%endif%}
+			</div> 
+			
+      <div id="container" class="row">
+        {% for project in collaborations %} {% include "category_view_page.html" with object=project %} {% endfor %}
+      </div>
+<!--       { include "_pagination.html" %}  -->
+    </div>
+ {% endif %}
+
+	
+	</div>
+
+    <script type="text/javascript">
+      // ------ Start isotope
+
+      $('#container').isotope({
+        itemSelector: '.project_container',
+        getSortData: {
+          rate: '.rate parseInt',
+          date: function(itemElem) { // function
+            var _date = $(itemElem).find('.date').text();
+            return Date.parse(_date);
+          }
+        }
+      });
+
+
+      $(document).ready(function() {
+
+			$( ".off-canvas-wrap" ).addClass("offcanvas-overlap");
+
+      });
+    </script>
+
+
+{% endblock base_body %}

@@ -1,0 +1,46 @@
+{% load humanize %}
+{% load get_skills %}
+<div class="large-12 medium-12 columns">	
+<div class="row">
+	
+
+	<div class="medium-8 large-8 columns  small-centered">			
+		
+		<div class="row">
+							<ul class="inline-list panel_notificaciones  
+												 {% if noti.isActive > 1  %}												 
+												 bkg-white-main												 
+												 {% else %}
+												 bkg-gray
+												 {%endif%}
+												 ">
+								{%  get_user_profile noti.fromUser as profi %}								
+								<li><a href="/perfil/{{ noti.fromUser.id }}"> <div class="img-container-user circular" style="background-image: url('{{ profi.avatar_url.url_700x700 }}');"></div> </a></li>
+								<li>									
+										<span class="txt18">
+											<a href="/perfil/{{ noti.fromUser.id  }}" class="user-link">
+											<strong> {{ noti.fromUser.first_name }} {{ noti.fromUser.last_name }} </strong>
+									</a>								
+											
+											- {{ noti.infoNotification }} 
+											
+											<a href="/proyecto/{{noti.projectNotification.user }}/{{noti.projectNotification.slug }}" class="user-link">
+										<strong>	{{ noti.projectNotification.title }} </strong>
+									</a>							
+											
+									</span>	
+									<span class="mb0 subheader">
+										{{ noti.created }}
+									</span>
+								</li>
+							</ul>
+		</div>
+		
+	</div>
+	
+			
+	
+	
+	</div>
+
+</div>

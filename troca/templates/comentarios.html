@@ -1,0 +1,62 @@
+<div id="comentarios-{{projectSlug.slug}}" class="comentarios"></div>
+<br>
+
+{% if user.is_authenticated %} 
+
+
+<div class="comment">
+		<section class="top">
+<ul class="inline-list">
+				<li>
+					<a href="/perfil/{{ user.id }}">
+						<div class="img-container-user circular" style="background-image: url('{{ userprofile.avatar_url.url_700x700 }}');"></div>
+					</a>
+				</li>
+				<li>
+					<h5 class="mb0"><a href="/perfil/{{ user.id }}">{{user.first_name}} {{user.last_name}}</a></h5>			
+				</li>
+			</ul>
+  </section>
+  <section class="commentContent">
+    <textarea class="large-12 medium-12 columns" rows="4" cols="50" name="comment" placeholder="Escribe tu comentario..." id="{{projectSlug.slug}}-txtComment"></textarea>
+            <br>
+            <input type="submit" name="submit" value="Comentar" class="btn btn-primary button radius right btnRed" id="{{projectSlug.slug}}-btn-comment">
+		</section>
+</div>
+
+
+{% endif  %}
+<!-- username, project.slug, comment -->
+
+<script  type="text/javascript">
+$(document).ready(function(){
+  ponerPrimerosComentarios{{projectSlug.slug}}();
+    $("#{{projectSlug.slug}}-btn-comment").click(function() {
+     enviarComentario{{projectSlug.slug}}();  
+    });
+});
+  
+//   /{{projectSlug}}
+  
+function enviarComentario{{projectSlug.slug}}(){
+  var com=$("#{{projectSlug.slug}}-txtComment");      
+    $.ajax({
+      url: "/comentar/{{username}}/{{projectSlug.slug}}/comentario/",
+      data: {
+        'mensaje': com.val()
+        }, 
+      success: function(result){
+        $("#comentarios-{{projectSlug.slug}}").html(result);
+        $("#{{projectSlug.slug}}-txtComment").val("");
+        }
+      });    
+}
+  
+  function ponerPrimerosComentarios{{projectSlug.slug}}(){
+    var ur="/comentarios/{{projectSlug.slug}}/"
+    $.ajax({url: ur, success: function(result){
+            $("#comentarios-{{projectSlug.slug}}").html(result);
+        }});
+  }
+  
+</script>

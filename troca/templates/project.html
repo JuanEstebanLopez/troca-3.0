@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load social_share %}
+{% load phileo_tags %}
+{% load sanitizer %}
+{% load humanize %}
+
+{% block title %}troca.beta | {{ object.title }} {% endblock title %}
+
+
+{% block base_body %}
+
+<!-- TOP BANNER DETAILS -->
+
+	{% include "project_vista.html"  with user=user userprofile=loggedUser object=object isReverseMatch=isReverseMatch hasProfile=hasProfile isMatch=isMatch author=author collaborators=collaborators rev_collaborators=rev_collaborators project=project author=author%}
+
+	{% endblock base_body %}

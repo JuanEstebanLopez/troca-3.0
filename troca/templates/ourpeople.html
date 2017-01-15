@@ -1,0 +1,627 @@
+{% load staticfiles %} 
+{% load core_extras %}
+{% load get_skills %}
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+	<meta charset="utf-8" />
+
+	<script>
+		(function(i, s, o, g, r, a, m) {
+			i['GoogleAnalyticsObject'] = r;
+			i[r] = i[r] || function() {
+				(i[r].q = i[r].q || []).push(arguments)
+			}, i[r].l = 1 * new Date();
+			a = s.createElement(o),
+				m = s.getElementsByTagName(o)[0];
+			a.async = 1;
+			a.src = g;
+			m.parentNode.insertBefore(a, m)
+		})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+		ga('create', 'UA-62933905-1', 'auto');
+		ga('send', 'pageview');
+	</script>
+	
+	<script type="text/javascript">
+    window.smartlook||(function(d) {
+    var o=smartlook=function(){ o.api.push(arguments)},s=d.getElementsByTagName('script')[0];
+    var c=d.createElement('script');o.api=new Array();c.async=true;c.type='text/javascript';
+    c.charset='utf-8';c.src='//rec.getsmartlook.com/bundle.js';s.parentNode.insertBefore(c,s);
+    })(document);
+    smartlook('init', '491c7aed0a175fa8542882f30d0f3d471e9cd445');
+</script>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+	{% block meta %}
+	{% endblock meta %} 
+	{% block base_title %}
+	<title>{% block title %}troca.beta{% endblock title %}</title>
+	<link rel="shortcut icon" href="{% static "foundation/img/favicon.ico" %}"/> 
+	{% endblock base_title %} 
+	{# Base Foundation CSS #}
+	{% block foundation_css %}
+	<link href='https://fonts.googleapis.com/css?family=Ubuntu:400,700,300' rel='stylesheet' type='text/css'>
+	<link href="{% static "css/normalize.css" %}" rel="stylesheet" />
+	<link href="{% static "foundation/css/foundation.min.css" %}" rel="stylesheet" />
+	<link rel="stylesheet "href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"> 
+	<link href="{% static "css/multiple-select.css" %}" rel="stylesheet">
+	{% endblock foundation_css %}
+	{# Custom CSS #} 
+	{% block css %}
+	<link rel="stylesheet "type="text/css" href="{% static "feedback/main.css" %}" />
+	<link href="{% static "css/style.css" %}" rel="stylesheet" />
+	<link href="{% static "css/hover.css" %}" rel="stylesheet" />
+	<link href="{% static "froala/css/froala_editor.min.css" %}" rel="stylesheet" />
+	<link href="{% static "froala/css/froala_style.css" %}" rel="stylesheet" />
+	<link href="{% static "froala/css/themes/custom-theme.css" %}" rel="stylesheet" />
+	{% endblock css %} {# Override if you need another version of modernizr #} {% block foundation_modernizer %}
+	{% endblock foundation_modernizer %} 
+	{# Custom head JS #}
+	{% block head_js %}
+	<script src="{% static "js/jquery.js" %}"></script>
+	<script src="{% static "js/main.js" %}"></script>
+	<script src="{% static "js/jquery-ui.js" %}"></script>
+	<script src="{% static "js/isotope.js" %}"></script>
+	<script src="{% static "froala/js/froala_editor.min.js" %}"></script>
+	<script src="{% static "froala/js/plugins/video.min.js" %}"></script>
+	<script src="{% static "froala/js/plugins/fullscreen.min.js" %}"></script>
+	<script src="{% static "froala/js/plugins/lists.min.js" %}"></script>
+  <script src="{% static "froala/js/plugins/char_counter.min.js" %}"></script>
+	<!-- Place this tag right after the last button or just before your close body tag. -->
+	<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+	<script src="{% static "js/jquery.multi-select.js" %}"></script>
+	<script src="{% static "js/jquery.quicksearch.js" %}"></script>
+	<script src="{% static "js/jquery.cookie.js" %}"></script>
+	<script src="{% static "js/jquery.validate.js" %}"></script>
+	<script src="{% static "js/packery.js" %}"></script>
+	<script src="https://npmcdn.com/draggabilly@2.1/dist/draggabilly.pkgd.min.js"></script>
+
+	{% endblock head_js %} 
+	{% block extrahead %}
+
+	{% endblock %}
+
+	</head>
+	
+	<body>
+		<div class="">
+			<section class="top-bar-section top-bar-section-landing" style="background-image:url('{% static 'img/landing.png' %}'); height:100px; margin-top:0px; padding-top:23px;">
+				<ul class="right">
+					{% if user.is_authenticated %}
+									{%if user|get_count_all_notifications  > 0 %} 
+										<li>
+											<span  class="round label noti-icon-all">
+												<i class="fa fa-bell " style="color:#32475A !important;"></i>
+											</span>
+											<span class="round label noti-num">
+												<strong style="color:#32475A !important;">{{user|get_count_all_notifications}}</strong>
+											</span>
+										</li>
+									{%endif%}
+					
+				<li class="has-dropdown top-nav-element">
+					 <a  href="/perfil/{{ user.id }}"> 
+						  {% if user.userprofile.avatar_url.url_60x60 %}
+					       <img src="{{ user.userprofile.avatar_url.url_60x60 }}" class="img-user-small">
+							{% else %}
+					       <img src="http://s22.postimg.org/sgwv8z7kx/url.jpg" class="img-user-small">
+					     {% endif %}
+					     <!--<span class="round label mss-notif"><strong>0</strong></span> { user.username }} --></a>
+					 <ul class="dropdown">
+						  <li><a href="/logout/"><i class="fa fa-sign-out"></i> Cerrar sesión</a></li>
+					</ul>
+				</li>
+				
+	
+					{% else %}
+
+					<li class="top-nav-element ml8"><a class="btn button btn_registrar" href="{% url 'register' %}">Registrarte</a></li>
+					
+					<li class="top-nav-element ml8"><a class="btn button btn_registrar" href="{% url 'login' %}">Ingresar</a></li>
+
+
+					{% endif %}
+				</ul>
+
+
+				<!-- Left Nav Section -->
+
+				<ul class="left ">					
+					<li><a href="/"> <i class="ml8"><img src="{% static 'img/favicon-32x32-b.png' %}" alt="Troca.cc"></i> <b class="titulo_troca">TROCA.CC</b></a></li>
+					<li >
+					<form method="get" id="form_busqueda" action="/busqueda/a"> <input style="background-image: url('{% static 'img/searchicon.png' %}');"  id="barra-busqueda" type="text" name="buscar" value="" placeholder="Busca proyectos para trocar"  onkeypress="busquedaFunction()" required></form></li>
+					<script>
+						function busquedaFunction() {
+							busc=document.getElementById("barra-busqueda").value;
+							document.getElementById("form_busqueda").action="/busqueda/"+busc+"/";
+// 								alert(document.getElementById("form_busqueda").action);
+						}
+						</script>
+				</ul>
+
+				<ul class="left show-for-medium-only">
+					<li><a href="/colabora/trueque/"><i class="fa fa-search title-icon"></i></a></li>
+					<li><a href="/crea/"><i class="fa fa-plus-circle title-icon"></i></a></li>
+					{% if user.is_authenticated %}
+					<li><a href="/encuentra/"><i class="fa fa-exchange title-icon"></i></a></li>
+					{% endif %}
+
+				</ul>
+
+			</section>	
+			
+			
+			
+			
+<!--  INICIO  -->			
+			
+
+<div class="gray-background" >
+    <div class="row ptb25 mrl20">
+        
+        <h1 class="titulo_qs txt38">¿QUIÉNES SOMOS?</h1>
+        <p class="texto_qs txt26">
+           Troca es una comunidad conformada por personas de todos los contextos de la produción cultural, <br> sin embargo éstas son las personas que la hicieron posible: 
+        </p>
+
+    </div>
+</div>
+
+<div class="bkg-white-main">
+    
+    
+<div class="row ptb25 mrl20 pb10">
+	<div class="large-12 medium-12 columns participante_qs">
+		<h3 class="titulo_qs txt30">Javier A. Ramos  <span class="subtitulo_qs txt30">/ Líder de proyecto</span></h3>
+		<p class="texto_qs txt18">
+			Director de la carrera de Diseño de Medios Interactivos, y miembro del Grupo de investigación en Diseño Leonardo de la Universidad Icesi, desde donde indaga en la interrelación entre Diseño, Innovación, Tecnologías y en el contexto social. Liderá el Laboratorio de medios digitales y contenidos culturales ComunLAB y el Festival internacional de animación “La Truca” de Cali
+		</p>
+		<ul class="separador_redes_sociales_qs padl0">
+			<li class="txt18"> 
+				<a href="https://miscabezas.wordpress.com/about/">
+					<span class="round label noti-icon" >
+						<i class="fa fa-wordpress txt26 white-main"></i>
+					</span>
+					<span class="texto_qs"> Blog </span> 
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>
+	
+	
+	<div class="row ptb25 mrl20 pb10">
+	<div class="large-12 medium-12 columns participante_qs">
+		<h3 class="titulo_qs txt30">Héctor J. Mejía  <span class="subtitulo_qs txt30">/ Asesor</span></h3>
+		<p class="texto_qs txt18">
+			Apasionado por la tecnología y fan proclamado de Google, trabaja de lleno en el diseño de interfaces hombre-máquina creando nuevas experiencias de usuario. Combina su trabajo y emprendimiento con clases en las universidad ICESI sobre desarrollo de software, programación web e interfaces hombre-máquina, formando nuevas generaciones de diseñadores y desarrolladores.
+		</p>
+		<ul class="separador_redes_sociales_qs padl0">
+			<li class="txt18"> 
+				<a href="http://snowcone.com.co">
+					<span class="round label noti-icon" >
+						<i class="fa fa-wordpress txt26 white-main"></i>
+					</span>
+					<span class="texto_qs"> Web </span> 
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>
+
+	
+	<div class="row ptb25 mrl20 pb10">
+	<div class="large-12 medium-12 columns participante_qs">
+		<h3 class="titulo_qs txt30">Nestor Tobar <span class="subtitulo_qs txt30">/ Asesor</span></h3>
+		<p class="texto_qs txt18">
+			 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sed malesuada quam. Sed non ligula nibh. Sed at dolor posuere, blandit odio vitae, maximus eros. Ut pellentesque consequat elit, nec euismod tortor condimentum nec.
+		</p>
+		
+	</div>
+</div>
+	
+	<div class="row ptb25 mrl20 pb10">
+	<div class="large-12 medium-12 columns participante_qs">
+		<h3 class="titulo_qs txt30">Carlos Cuervo <span class="subtitulo_qs txt30">/ Asesor</span></h3>
+		<p class="texto_qs txt18">
+			 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sed malesuada quam. Sed non ligula nibh. Sed at dolor posuere, blandit odio vitae, maximus eros. Ut pellentesque consequat elit, nec euismod tortor condimentum nec.
+		</p>
+		
+	</div>
+</div>	
+
+
+	
+		<div class="row ptb25 mrl20 pb10">
+	<div class="large-12 medium-12 columns participante_qs">
+		<h3 class="titulo_qs txt30">Juan E. López <span class="subtitulo_qs txt30">/ Programación (Troca v2.1 - v3.)</span></h3>
+		<p class="texto_qs txt18">
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sed malesuada quam. Sed non ligula nibh. Sed at dolor posuere, blandit odio vitae, maximus eros. Ut pellentesque consequat elit, nec euismod tortor condimentum nec.
+		</p>
+		<ul class="separador_redes_sociales_qs padl0">
+			
+			<li class="txt18"> 
+				<a href="https://www.behance.net/jelg19943390">
+					<span class="round label noti-icon" >
+						<i class="fa fa-behance txt26 white-main"></i>
+					</span>
+					<span class="texto_qs"> </span> 
+				</a>
+			</li>
+			
+			<li class="txt18"> 
+				<a href="https://co.linkedin.com/in/juan-esteban-lopez-garcia-6b7500b5">
+					<span class="round label noti-icon" >
+						<i class="fa fa-linkedin txt26 white-main"></i>
+					</span>
+					<span class="texto_qs"> </span> 
+				</a>
+			</li>
+			
+		</ul>
+	</div>
+</div>
+	
+	
+	<div class="row ptb25 mrl20 pb10">
+	<div class="large-12 medium-12 columns participante_qs">
+		<h3 class="titulo_qs txt30">J. David Toro <span class="subtitulo_qs txt30">/ Diseño y Programación (Troca - Troca v2.1.)</span></h3>
+		<p class="texto_qs txt18">
+			 Como diseñador considero que no solo es importante si las cosas lucen bien, sino también los argumentos que respaldan la existencia de cada elemento dentro de un diseño. Una investigación profunda y una correcta planificación son el éxito de cualquier trabajo.
+		</p>
+		<ul class="separador_redes_sociales_qs padl0">
+			
+			<li class="txt18"> 
+				<a href="https://www.behance.net/jovencoda">
+					<span class="round label noti-icon" >
+						<i class="fa fa-behance txt26 white-main"></i>
+					</span>
+					<span class="texto_qs"> </span> 
+				</a>
+			</li>
+			
+			<li class="txt18"> 
+				<a href="https://co.linkedin.com/in/jdavidtoro">
+					<span class="round label noti-icon" >
+						<i class="fa fa-linkedin txt26 white-main"></i>
+					</span>
+					<span class="texto_qs"> </span> 
+				</a>
+			</li>
+			
+		</ul>
+		<span class="texto_qs txt18">Más información: </span>  <a class="enlace_rojo txt18" href="https://www.behance.net/gallery/30690349/Trocabeta">Troca v2.</a>
+	</div>
+</div>
+	
+	<div class="row ptb25 mrl20 pb10">
+	<div class="large-12 medium-12 columns participante_qs">
+		<h3 class="titulo_qs txt30">Daniel A. Bolivar <span class="subtitulo_qs txt30">/ Diseño (Troca v1.)</span></h3>
+		<p class="texto_qs txt18">
+			 Geek empedernido, está convencido que los videojuegos y las películas le han enseñado más de la vida que la vida misma. Le gusta aprender, fotografiar extraños y googlear las respuestas a las preguntas que le hacen, cuando no la conoce de antemano.
+		</p>
+		<ul class="separador_redes_sociales_qs padl0">
+			
+			<li class="txt18"> 
+				<a href="https://www.behance.net/danielbe">
+					<span class="round label noti-icon" >
+						<i class="fa fa-behance txt26 white-main"></i>
+					</span>
+					<span class="texto_qs"> </span> 
+				</a>
+			</li>
+			
+			<li class="txt18"> 
+				<a href="https://co.linkedin.com/in/ddanielb">
+					<span class="round label noti-icon" >
+						<i class="fa fa-linkedin txt26 white-main"></i>
+					</span>
+					<span class="texto_qs"> </span> 
+				</a>
+			</li>
+			
+		</ul>
+		<span class="texto_qs txt18">Más información: </span>  <a class="enlace_rojo txt18" href="https://www.behance.net/gallery/22749863/Trocacc">Troca v1.</a>
+	</div>
+</div>
+	        
+
+		<div class="row ptb25 mrl20 pb10">
+	<div class="large-12 medium-12 columns participante_qs">
+		<h3 class="titulo_qs txt30">Laura M. Araujo <span class="subtitulo_qs txt30">/ Diseño (Troca v1.)</span></h3>
+		<p class="texto_qs txt18">
+			 Dice que lo mejor que le enseña el diseño es otra forma de ver la vida. Le gusta la investigación, los gatos, tomar fotos, toda clase de dulce (en especial el helado). Lo que espera de la vida es la oportunidad de disfrutar su trabajo, el diseño es un primer paso, generar un cambio positivo el segundo.
+		</p>
+		<ul class="separador_redes_sociales_qs padl0">
+			
+			<li class="txt18"> 
+				<a href="https://www.behance.net/lauaraujo">
+					<span class="round label noti-icon" >
+						<i class="fa fa-behance txt26 white-main"></i>
+					</span>
+					<span class="texto_qs"> </span> 
+				</a>
+			</li>
+			
+			<li class="txt18"> 
+				<a href="https://co.linkedin.com/in/lauaraujo">
+					<span class="round label noti-icon" >
+						<i class="fa fa-linkedin txt26 white-main"></i>
+					</span>
+					<span class="texto_qs"> </span> 
+				</a>
+			</li>
+			
+		</ul>
+	</div>
+</div>
+
+
+<br>
+        
+    
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--  FIN  -->
+
+
+
+
+
+{# Custom JS #} 
+	
+	{% block body_js %}
+
+	<script type="text/javascript">
+		var _urq = _urq || [];
+		_urq.push(['initSite', 'cc8a12b8-8355-4050-b143-5fb1604c333a']);
+		(function() {
+			var ur = document.createElement('script');
+			ur.type = 'text/javascript';
+			ur.async = true;
+			ur.src = ('https:' == document.location.protocol ? 'https://cdn.userreport.com/userreport.js' : 'http://cdn.userreport.com/userreport.js');
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(ur, s);
+		})();
+	</script>
+
+	{% endblock body_js %} {# Foundation JS #} {% block foundation_js %}
+	<script src="{% static "foundation/js/vendor/modernizr.js" %}"></script>
+	<script src="{% static "foundation/js/foundation.min.js" %}"></script>
+	<script src="{% static "foundation/js/foundation/foundation.magellan.js" %}"></script>
+	<script src="{% static "foundation/js/foundation/foundation.tooltip.js" %}"></script>
+
+	{% endblock foundation_js %} {# Init Foundation #} {% block foundation_js_init %}
+	<script>
+		
+		;(function ($, window, document, undefined) {
+  'use strict';
+
+  Foundation.libs.offcanvas = {
+    name : 'offcanvas',
+
+    version : '5.2.2',
+
+    settings : {
+      open_method: 'overlap',
+      close_on_click: true  
+    },
+
+    init : function (scope, method, options) {
+      this.bindings(method, options);
+    },
+
+    events : function () {
+      var self = this,
+          S = self.S;
+      if (this.settings.open_method === 'move'){
+        S(this.scope).off('.offcanvas')
+          .on('click.fndtn.offcanvas', '.left-off-canvas-toggle', function (e) {
+            self.click_toggle_class(e, 'move-right');
+          })
+          .on('click.fndtn.offcanvas', '.left-off-canvas-menu a', function (e) {
+            var settings = self.get_settings(e)
+            if (settings.close_on_click)
+              S(".off-canvas-wrap").removeClass("move-right");
+          })
+          .on('click.fndtn.offcanvas', '.right-off-canvas-toggle', function (e) {
+            self.click_toggle_class(e, 'move-left');
+          })
+          .on('click.fndtn.offcanvas', '.right-off-canvas-menu a', function (e) {
+            var settings = self.get_settings(e)
+            if (settings.close_on_click)
+              S(".off-canvas-wrap").removeClass("move-left");
+          })
+          .on('click.fndtn.offcanvas', '.exit-off-canvas', function (e) {
+            self.click_remove_class(e, 'move-left');
+            self.click_remove_class(e, 'move-right');
+          })
+      } else if (this.settings.open_method === 'overlap') {
+        S(this.scope).off('.offcanvas')
+          .on('click.fndtn.offcanvas', '.left-off-canvas-toggle', function (e) {
+            self.click_toggle_class(e, 'offcanvas-overlap');
+          })
+          .on('click.fndtn.offcanvas', '.left-off-canvas-menu a', function (e) {
+            var settings = self.get_settings(e)
+            if (settings.close_on_click)
+              S(".off-canvas-wrap").removeClass("offcanvas-overlap");
+          })
+          .on('click.fndtn.offcanvas', '.right-off-canvas-toggle', function (e) {
+            self.click_toggle_class(e, 'offcanvas-overlap');
+          })
+          .on('click.fndtn.offcanvas', '.right-off-canvas-menu a', function (e) {
+            var settings = self.get_settings(e)
+            if (settings.close_on_click)
+              S(".off-canvas-wrap").removeClass("offcanvas-overlap");
+          })
+          .on('click.fndtn.offcanvas', '.exit-off-canvas', function (e) {
+            self.click_remove_class(e, 'offcanvas-overlap');
+            self.click_remove_class(e, 'offcanvas-overlap');
+          })
+      } else {
+        return;
+      }
+    },
+
+    click_toggle_class: function(e, class_name) {
+      e.preventDefault();
+      this.S(e.target).closest('.off-canvas-wrap').toggleClass(class_name);
+    },
+
+    click_remove_class: function(e, class_name) {
+      e.preventDefault();
+      this.S('.off-canvas-wrap').removeClass(class_name);
+    },
+
+    get_settings: function(e) {
+      var offcanvas = this.S(e.target).closest('[' + this.attr_name() + ']')
+      return offcanvas.data(this.attr_name(true) + '-init') || this.settings;
+    },
+
+    reflow : function () {}
+  };
+}(jQuery, window, window.document));
+		
+		$(document).foundation();
+	</script>
+	{% endblock foundation_js_init %}
+</body>
+	
+	
+<footer>
+	<!-- Footer -->
+<div class="row contenedor_troca contenido">
+<div>
+	
+	
+	<div class="footer-bkg">	
+		<div class="row">
+		<div class="small-11 large-11 columns">
+			<a  href="/">TROCA.CC</a> <span class="separador">|</span> <a class="acerca_de" href="/acerca_de_troca">Acerca de troca</a> 
+			<br>
+			Troca está hecha bajo la licencia Creative Commons Reconocimiento-NoComercial 4.0
+			</div>
+			<div class="small-1 large-1 columns">
+				<a class="btn_fb" href="https://www.facebook.com/trocabeta"><i class="fa fa-facebook-square"></i></a>
+			</div>
+		</div>
+	</div>
+	
+	
+	
+<!-- 	<div class="foot-nav red-background white-main ">
+		<div class="row">
+			<div class="small-4 large-4 columns">
+				<ul class="no-bullet">
+					<li>
+						<p><b>SOBRE TROCA</b></p>
+					</li>
+					<li>
+						<a class="a-white" href="{% url 'about' %}">
+							<p class="paragraph">Qué es Troca</p>
+						</a>
+					</li>
+					<li>
+						<a class="a-white" href="{% url 'ourpeople' %}">
+							<p class="paragraph">Quiénes somos</p>
+						</a>
+					</li>
+					<li>
+						<a class="a-white" href="http://troca.cc/proyecto/genitor06/trocabeta/">
+							<p class="paragraph">Voluntariado</p>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="small-4 large-4 columns">
+				<ul class="no-bullet">
+					<li>
+						<p><b>NAVEGACIÓN</b></p>
+					</li>
+					<li>
+						<a class="a-white" href="/descubre/">
+							<p class="paragraph">Descubre proyectos</p>
+						</a>
+					</li>
+					<li>
+						<a class="a-white" href="/crea/">
+							<p class="paragraph">Crea un proyecto</p>
+						</a>
+					</li>
+					<li>
+						<a class="a-white" href="/encuentra/">
+							<p class="paragraph">Conoce colaboradores</p>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="small-4 large-4 columns">
+				<ul class="no-bullet">
+					<li>
+						<p><b>REDES SOCIALES</b></p>
+					</li>
+					<li>
+						<a class="a-white" href="https://www.facebook.com/trocabeta">
+							<p class="paragraph">Facebook</p>
+						</a>
+					</li>
+					<li>
+						<a class="a-white" href="#">
+							<p class="paragraph">Twitter</p>
+						</a>
+					</li>
+					<li>
+						<a class="a-white" href="https://github.com/jovencoda/troca">
+							<p class="paragraph">Github</p>
+						</a>
+					</li>
+				</ul>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="black-bkg" style=" padding-bottom: 40px;">
+		<div class="row text-center padrl15">
+			<h1><a href="/"><img class="logo" src="{% static "img/logo2white.png" %}" alt="Troca"></a></h1>
+			<p class="white-main">Troca está hecha bajo la licencia <b>Creative Commons Reconocimiento-NoComercial 4.0</b></p>
+			<p class="white-main">Una página de <b><a href="https://www.behance.net/jovencoda">Bulls & Brothers</a></b></p>
+		</div>
+	</div> -->	
+	
+</div>		
+</div>
+</footer>
+
+
+
+</html>

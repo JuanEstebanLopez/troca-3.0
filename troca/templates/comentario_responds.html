@@ -1,0 +1,29 @@
+{% load staticfiles %} 
+{% load core_extras %} 
+{% load get_skills %}
+
+
+			<!-- 		Respuestas del comentario	 -->
+			<!-- 				  for c in responds.[com.pk]    -->
+			{% for c in comment|get_responds %}
+
+			<div class="respuesta">
+				<div class="fotoComentario" style="display: inline-block; width:30px; vertical-align: top;">
+					<a href="/perfil/{{ c.userRespond.id }}">
+						<div class="img-container-user circular" style="background-image: url('{{ c.userProfileRespond.avatar_url.url_700x700 }}');  width:30px;  height:30px;">
+						</div>
+					</a>
+				</div>
+				<div class="infoComentario" style="display: inline-block; max-width:80%">
+					<h5><a href="/perfil/{{ c.userRespond.id }}">{{c.userRespond.first_name}} {{c.userRespond.last_name}}</a> </h5>
+					<p class="comentario">
+						"{{c.respond}}"
+					</p>
+					
+				</div>
+			</div>
+			<br>
+			{%endfor%}
+
+		
+	
